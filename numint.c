@@ -40,10 +40,25 @@ double evaluate(Polynomial p, double x) {
 	double res = 0.0;
 
 	for (int i = 0; i < NUM_COEFFICIENTS; i++) {
-		res += p.coefficients[i] * pow(x, NUM_COEFFICIENTS - i);
+		res += ((double) p.coefficients[i]) * pow(x, NUM_COEFFICIENTS - i);
 	}
 
 	res += p.constant;
+	return res;
+}
+
+double midpoint_approx(Polynomial p, int ll, int ul, int num_si) {
+	double width = ((double) (ul - ll)) / num_si;
+	printf("width: %.2f\n", width);
+
+	double res = 0.0;
+	for (int i = 0; i < num_si; i++) {
+		double midpoint = ll + (((width * i) + (width * (i + 1))) / 2);
+		res += evaluate(p, midpoint);
+	}
+
+	res *= width;
+
 	return res;
 }
 
@@ -70,8 +85,13 @@ int main(int argc, char *argv[]) {
 	free(s);
 
 	/* calculate test */
-	double val = evaluate(p, 0);
-	printf("(0, %.2f)\n", val);
+	double val = evaluate(p, 0.5);
+	printf("(0.5, %.2f)\n", val);
+
+	/* do approximations */
+	double mp = midpoint_approx(p, lower_limit, upper_limit,
+			num_subints);
+	printf("Midpoint approximation: %.10f\n", mp);
 
 	return 0;
 }
