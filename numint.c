@@ -1,7 +1,12 @@
+/*
+ * TODO calculate exact integral and print percentage errors
+ * TODO figure out small error in simpson's approximation
+ */
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+// this is also equal to the degree of the polynomial, and can be changed
 #define NUM_COEFFICIENTS 5
 
 typedef struct {
@@ -47,13 +52,17 @@ double evaluate(Polynomial p, double x) {
 	return res;
 }
 
+double exact_integral(Polynomial p, int ll, int ul, int num_si) {
+	/* TODO implement */
+}
+
 double midpoint_approx(Polynomial p, int ll, int ul, int num_si) {
 	double width = ((double) (ul - ll)) / num_si;
 
 	double res = 0.0;
 	for (int i = 0; i < num_si; i++) {
-		double x1 = width * i;
-		double midpoint = ll + (x1 + (width / 2));
+		double x1 = width * (double) i;
+		double midpoint = (double) ll + (x1 + (width / 2));
 		res += evaluate(p, midpoint);
 	}
 
@@ -67,8 +76,8 @@ double trapezoid_approx(Polynomial p, int ll, int ul, int num_si) {
 
 	double res = 0.0;
 	for (int i = 0; i < num_si; i++) {
-		double x1 = ll + width * i;
-		double x2 = ll + width * (i + 1);
+		double x1 = (double) ll + width * i;
+		double x2 = (double) ll + width * (i + 1);
 		res += (evaluate(p, x1) + evaluate(p, x2)) / 2;
 	}
 
@@ -117,6 +126,7 @@ int main(int argc, char *argv[]) {
 	printf("Midpoint approximation: %.10f\n", midpoint);
 	printf("Trapezoid approximation: %.10f\n", trapezoid);
 	printf("Simpson's approximation: %.10f\n", simpson);
+	/* TODO percent error stuff */
 
 	return 0;
 }
