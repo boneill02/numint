@@ -31,9 +31,9 @@ double evaluate(Polynomial p, double x) {
 	double res = 0.0;
 
 	for (int i = 0; i < NUM_COEFFICIENTS; i++) {
-		res += (double) p.coefficients[i] * (double) pow(x, NUM_COEFFICIENTS - i);
+		res += (double) p.coefficients[i] * pow(x, NUM_COEFFICIENTS - i);
 	}
-	res += (double) p.constant;
+	res += p.constant;
 
 	return res;
 }
@@ -58,10 +58,10 @@ double exact_integral(Polynomial p, int ll, int ul) {
 
 /* midpoint approximation */
 double midpoint_approx(Polynomial p, int ll, int ul, int num_si) {
-	double res = 0.0, width = ((double) (ul - ll)) / (double) num_si;
+	double res = 0.0, width = (double) (ul - ll) / num_si;
 
 	for (int i = 0; i < num_si; i++) {
-		double x1 = (double) ll + (width * (double) i);
+		double x1 = (double) ll + (width * i);
 		double midpoint = x1 + (width / 2.0);
 		res += evaluate(p, midpoint);
 	}
@@ -71,11 +71,11 @@ double midpoint_approx(Polynomial p, int ll, int ul, int num_si) {
 
 /* trapezoid approximation */
 double trapezoid_approx(Polynomial p, int ll, int ul, int num_si) {
-	double res = 0.0, width = ((double) (ul - ll)) / num_si;
+	double res = 0.0, width = (double) (ul - ll) / num_si;
 
 	for (int i = 0; i < num_si; i++) {
-		double x1 = (double) ll + width * (double) i;
-		double x2 = (double) ll + width * ((double) i + 1.0);
+		double x1 = (double) ll + width * i;
+		double x2 = (double) ll + width * (i + 1.0);
 		res += (evaluate(p, x1) + evaluate(p, x2)) / 2.0;
 	}
 
