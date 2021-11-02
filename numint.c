@@ -44,8 +44,7 @@ double evaluate(Polynomial p, double x) {
 
 /* calculate percentage error of approximation */
 double percentage_error(double approx, double exact) {
-	double error = fabs(exact - approx) / fabs(exact);
-	return error * 100.0;
+	return (fabs(exact - approx) / fabs(exact)) * 100.0;
 }
 
 /* find the exact definite integral of a polynomial */
@@ -53,10 +52,9 @@ double exact_integral(Polynomial p, int ll, int ul) {
 	double a = 0.0, b = 0.0;
 
 	for (int i = 0; i < NUM_COEFFICIENTS; i++) {
-		double ta = p.coefficients[i] * pow(ll, (NUM_COEFFICIENTS - i) + 1);
-		double tb = p.coefficients[i] * pow(ul, (NUM_COEFFICIENTS - i) + 1);
-		a += ta / (double) ((NUM_COEFFICIENTS - i) + 1);
-		b += tb / (double) ((NUM_COEFFICIENTS - i) + 1);
+		int n = NUM_COEFFICIENTS - i;
+		a += (p.coefficients[i] * pow(ll, n + 1)) / (double) (n + 1);
+		b += p.coefficients[i] * pow(ul, n + 1) / (double) (n + 1);
 	}
 
 	return b - a;
@@ -66,8 +64,8 @@ double midpoint_approx(Polynomial p, int ll, int ul, int num_si) {
 	double res = 0.0, width = ((double) (ul - ll)) / (double) num_si;
 
 	for (int i = 0; i < num_si; i++) {
-		double x1 = width * (double) i;
-		double midpoint = (double) ll + (x1 + (width / 2.0));
+		double x1 = (double) ll + (width * (double) i);
+		double midpoint = x1 + (width / 2.0);
 		res += evaluate(p, midpoint);
 	}
 
@@ -108,7 +106,7 @@ int main(int argc, char *argv[]) {
 		p.coefficients[i] = getn(s);
 		clear_string(s, INPUT_LEN);
 	}
-	
+
 	/* get constant */
 	sprintf(s, "%c", NUM_COEFFICIENTS + 65);
 	p.constant = getn(s);
