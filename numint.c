@@ -13,6 +13,7 @@ typedef struct {
 int getn(char *prompt) {
 	char *ptr, line[128];
 	int n = 0;
+
 	printf("%s: ", prompt);
 	while (fgets(line, sizeof(line), stdin)) {
 		n = strtol(line, &ptr, 10);
@@ -28,10 +29,12 @@ int getn(char *prompt) {
 /* evaluate a polynomial with the given coefficients at x */
 double evaluate(Polynomial p, double x) {
 	double res = 0.0;
+
 	for (int i = 0; i < NUM_COEFFICIENTS; i++) {
 		res += (double) p.coefficients[i] * (double) pow(x, NUM_COEFFICIENTS - i);
 	}
 	res += (double) p.constant;
+
 	return res;
 }
 
@@ -83,6 +86,7 @@ double trapezoid_approx(Polynomial p, int ll, int ul, int num_si) {
 double simpson_approx(Polynomial p, int ll, int ul, int num_si) {
 	double ma = midpoint_approx(p, ll, ul, num_si);
 	double ta = trapezoid_approx(p, ll, ul, num_si);
+
 	return ((2.0 * ma) + ta) / 3.0;
 }
 
@@ -91,7 +95,7 @@ int main(int argc, char *argv[]) {
 	char prompt[1];
 	Polynomial p;
 
-	/* get user input */
+	/* get parameters */
 	lower_limit = getn("Lower limit");
 	upper_limit = getn("Upper limit");
 	num_subints = getn("Number of subintervals");
