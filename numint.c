@@ -51,6 +51,13 @@ double evaluate(Polynomial p, double x) {
 	return res;
 }
 
+/* calculate percentage error of approximation */
+double percentage_error(double approx, double exact) {
+	double error = fabs(exact - approx) / fabs(exact);
+	
+	return error * 100.0;
+}
+
 /* find the exact definite integral of a polynomial */
 double exact_integral(Polynomial p, int ll, int ul) {
 	double a = 0.0, b = 0.0;
@@ -74,7 +81,7 @@ double midpoint_approx(Polynomial p, int ll, int ul, int num_si) {
 	double res = 0.0;
 	for (int i = 0; i < num_si; i++) {
 		double x1 = width * (double) i;
-		double midpoint = (double) ll + (x1 + (width / 2));
+		double midpoint = (double) ll + (x1 + (width / 2.0));
 		res += evaluate(p, midpoint);
 	}
 
@@ -88,9 +95,9 @@ double trapezoid_approx(Polynomial p, int ll, int ul, int num_si) {
 
 	double res = 0.0;
 	for (int i = 0; i < num_si; i++) {
-		double x1 = (double) ll + width * i;
-		double x2 = (double) ll + width * (i + 1);
-		res += (evaluate(p, x1) + evaluate(p, x2)) / 2;
+		double x1 = (double) ll + width * (double) i;
+		double x2 = (double) ll + width * ((double) i + 1.0);
+		res += (evaluate(p, x1) + evaluate(p, x2)) / 2.0;
 	}
 
 	res *= width;
@@ -126,20 +133,23 @@ int main(int argc, char *argv[]) {
 	sprintf(s, "%c", NUM_COEFFICIENTS + 65);
 	p.constant = getn(s);
 
-	/* do approximations */
-	double midpoint = midpoint_approx(p, lower_limit, upper_limit,
-			num_subints);
-	double trapezoid = trapezoid_approx(p, lower_limit, upper_limit,
-			num_subints);
-	double simpson = simpson_approx(p, lower_limit, upper_limit,
-			num_subints);
+	/* calculations */
 	double exact = exact_integral(p, lower_limit, upper_limit);
+	double mp = midpoint_approx(p, lower_limit, upper_limit, num_subints);
+	double mp_err = percentage_error(mp, exact);
+	double tz = trapezoid_approx(p, lower_limit, upper_limit, num_subints);
+	double tz_err = percentage_error(tz, exact);
+	double ss = simpson_approx(p, lower_limit, upper_limit, num_subints);
+	double ss_err = percentage_error(ss, exact);
 
-	printf("Midpoint approximation: %.10f\n", midpoint);
-	printf("Trapezoid approximation: %.10f\n", trapezoid);
-	printf("Simpson's approximation: %.10f\n", simpson);
-	printf("Exact integral: %.10f\n", exact);
-	/* TODO percent error stuff */
+	/* print results with 6 decimal point precision */
+	printf("Exact integral: %.10f\n\n", exact);
+	printf("Midpoint approximation: %.06f\n", mp);
+	printf("Midpoint percentage error: %.06f\n", mp_err);
+	printf("Trapezoid approximation: %.06f\n", tz);
+	printf("Trapezoid percentage error: %.06f\n", tz_err);
+	printf("Simpson's approximation: %.06f\n", ss);
+	printf("Simpson's percentage error: %.06f\n", ss_err);
 
 	return 0;
 }
