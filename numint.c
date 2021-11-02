@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #define INPUT_LEN 32 // the length of the input string
-#define NUM_COEFFICIENTS 5 // the degree of the polynomial. can be changed
+#define NUM_COEFFICIENTS 5 // the degree of the polynomial. can be up to 26
 
 typedef struct {
 	int constant, coefficients[NUM_COEFFICIENTS];
@@ -11,7 +11,7 @@ typedef struct {
 
 /* gets an integer from standard input. */
 int getn(char *prompt) {
-	char *ptr, line[128];
+	char *ptr, line[INPUT_LEN];
 	int n = 0;
 
 	printf("%s: ", prompt);
