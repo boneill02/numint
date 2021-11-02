@@ -2,18 +2,19 @@ include config.mk
 
 SRC = numint.c
 OBJ = ${SRC:.c=.o}
+TARG = ${SRC:.c=}
 
-all: numint
+all: ${TARG}
 
 .c.o:
 	${CC} -c ${CFLAGS} $<
 
 ${OBJ}: config.mk
 
-numint: ${OBJ}
+${TARG}: ${OBJ}
 	${CC} -o $@ ${OBJ} ${LDFLAGS}
 
 clean:
-	rm -f numint ${OBJ}
+	rm -f ${TARG} ${OBJ}
 
 .PHONY: all clean
