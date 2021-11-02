@@ -9,13 +9,6 @@ typedef struct {
 	int constant, coefficients[NUM_COEFFICIENTS];
 } Polynomial;
 
-/* sets all characters in a string to '\0' (NULL) */
-void clear_string(char *s, int len) {
-	for (int i = 0; i < len; i++) {
-		s[i] = '\0';
-	}
-}
-
 /* gets an integer from standard input. */
 int getn(char *prompt) {
 	char *ptr, line[128];
@@ -60,6 +53,7 @@ double exact_integral(Polynomial p, int ll, int ul) {
 	return b - a;
 }
 
+/* midpoint approximation */
 double midpoint_approx(Polynomial p, int ll, int ul, int num_si) {
 	double res = 0.0, width = ((double) (ul - ll)) / (double) num_si;
 
@@ -72,6 +66,7 @@ double midpoint_approx(Polynomial p, int ll, int ul, int num_si) {
 	return res * width;
 }
 
+/* trapezoid approximation */
 double trapezoid_approx(Polynomial p, int ll, int ul, int num_si) {
 	double res = 0.0, width = ((double) (ul - ll)) / num_si;
 
@@ -84,6 +79,7 @@ double trapezoid_approx(Polynomial p, int ll, int ul, int num_si) {
 	return res * width;
 }
 
+/* simpson's approximation */
 double simpson_approx(Polynomial p, int ll, int ul, int num_si) {
 	double ma = midpoint_approx(p, ll, ul, num_si);
 	double ta = trapezoid_approx(p, ll, ul, num_si);
@@ -92,7 +88,7 @@ double simpson_approx(Polynomial p, int ll, int ul, int num_si) {
 
 int main(int argc, char *argv[]) {
 	int lower_limit, upper_limit, num_subints;
-	char s[INPUT_LEN];
+	char prompt[1];
 	Polynomial p;
 
 	/* get user input */
@@ -102,14 +98,13 @@ int main(int argc, char *argv[]) {
 
 	/* get coefficients */
 	for (int i = 0; i < NUM_COEFFICIENTS; i++) {
-		sprintf(s, "%c", i + 65);
-		p.coefficients[i] = getn(s);
-		clear_string(s, INPUT_LEN);
+		prompt[0] = (char) i + 65;
+		p.coefficients[i] = getn(prompt);
 	}
 
 	/* get constant */
-	sprintf(s, "%c", NUM_COEFFICIENTS + 65);
-	p.constant = getn(s);
+	prompt[0] = (char) NUM_COEFFICIENTS + 65;
+	p.constant = getn(prompt);
 
 	/* calculations */
 	double exact = exact_integral(p, lower_limit, upper_limit);
