@@ -6,14 +6,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// this is also equal to the degree of the polynomial, and can be changed
-#define NUM_COEFFICIENTS 5
+#define INPUT_LEN 32 // the length of the input string
+#define NUM_COEFFICIENTS 5 // the degree of the polynomial. can be changed
 
 typedef struct {
 	int coefficients[NUM_COEFFICIENTS];
 	int constant;
 } Polynomial;
-
 
 /* sets all characters in a string to '\0' (NULL) */
 void clear_string(char *s, int len) {
@@ -52,8 +51,21 @@ double evaluate(Polynomial p, double x) {
 	return res;
 }
 
-double exact_integral(Polynomial p, int ll, int ul, int num_si) {
-	/* TODO implement */
+/* find the exact definite integral of a polynomial */
+double exact_integral(Polynomial p, int ll, int ul) {
+	double a = 0.0, b = 0.0;
+
+	for (int i = 0; i < NUM_COEFFICIENTS; i++) {
+		double ta = p.coefficients[i] * pow(ll, (NUM_COEFFICIENTS - i) + 1);
+		double tb = p.coefficients[i] * pow(ul, (NUM_COEFFICIENTS - i) + 1);
+		ta /= (NUM_COEFFICIENTS - i) + 1;
+		tb /= (NUM_COEFFICIENTS - i) + 1;
+
+		a += ta;
+		b += tb;
+	}
+
+	return b - a;
 }
 
 double midpoint_approx(Polynomial p, int ll, int ul, int num_si) {
@@ -96,7 +108,7 @@ double simpson_approx(Polynomial p, int ll, int ul, int num_si) {
 int main(int argc, char *argv[]) {
 	int lower_limit, upper_limit, num_subints;
 	Polynomial p;
-	char *s = malloc(4);
+	char s[INPUT_LEN];
 
 	/* get user input */
 	lower_limit = getn("Lower limit");
@@ -107,13 +119,12 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < NUM_COEFFICIENTS; i++) {
 		sprintf(s, "%c", i + 65);
 		p.coefficients[i] = getn(s);
-		clear_string(s, 4);
+		clear_string(s, INPUT_LEN);
 	}
 	
 	/* get constant */
 	sprintf(s, "%c", NUM_COEFFICIENTS + 65);
 	p.constant = getn(s);
-	free(s);
 
 	/* do approximations */
 	double midpoint = midpoint_approx(p, lower_limit, upper_limit,
@@ -122,10 +133,12 @@ int main(int argc, char *argv[]) {
 			num_subints);
 	double simpson = simpson_approx(p, lower_limit, upper_limit,
 			num_subints);
+	double exact = exact_integral(p, lower_limit, upper_limit);
 
 	printf("Midpoint approximation: %.10f\n", midpoint);
 	printf("Trapezoid approximation: %.10f\n", trapezoid);
 	printf("Simpson's approximation: %.10f\n", simpson);
+	printf("Exact integral: %.10f\n", exact);
 	/* TODO percent error stuff */
 
 	return 0;
