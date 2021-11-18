@@ -45,15 +45,21 @@ double percentage_error(double approx, double exact) {
 
 /* find the exact definite integral of a polynomial */
 double exact_integral(Polynomial p, int ll, int ul) {
-	double a = 0.0, b = 0.0;
-
+	double res = 0.0;
+	
 	for (int i = 0; i < NUM_COEFFICIENTS; i++) {
-		int n = NUM_COEFFICIENTS - i;
-		a += (p.coefficients[i] * pow(ll, n + 1)) / (double) (n + 1);
-		b += p.coefficients[i] * pow(ul, n + 1) / (double) (n + 1);
+		printf("%.2f, ", (double) p.coefficients[i]);
 	}
 
-	return b - a;
+
+	for (int i = 0; i < NUM_COEFFICIENTS; i++) {
+		double n = NUM_COEFFICIENTS - i;
+		double coefficient = (double) p.coefficients[i];
+		res += coefficient * ((pow(ul, n + 1) - pow(ll, n + 1)) / (n + 1));
+	}
+	res += p.constant;
+
+	return res;
 }
 
 /* midpoint approximation */
