@@ -53,6 +53,8 @@ double exact_integral(Polynomial p, int ll, int ul) {
 		b += p.coefficients[i] * pow(ul, n + 1) / (double) (n + 1);
 	}
 
+	b += p.constant;
+
 	return (b - a) + p.constant;
 }
 
